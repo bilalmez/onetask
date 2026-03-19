@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OneTask</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      /* Light Theme Colors */
+      --bg: #FFFFFF;
+      --bg2: #F9F9F8;
+      --bg3: #F1F1F0;
+      --border: #E5E5E5;
+      --text: #202020;
+      --text2: #5F5E5B;
+      --text3: #90908C;
+      --green: #0F7B6C;
+      --green-bg: #EDF9F6;
+      --green-bd: #C0EBE1;
+      --yellow: #C27903;
+      --yellow-bg: #FEF7E8;
+      --yellow-bd: #F6E1A4;
+      --red: #D93025;
+      --red-bg: #FBEDED;
+      --red-bd: #F7CFCF;
+      --blue: #1C82AD;
+      --blue-bg: #EAF6FB;
+      --blue-bd: #BDE4F4;
+      --gray-bg: #F3F3F2;
+
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+      --input-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    [data-theme="dark"] {
+      /* Dark Theme Colors */
+      --bg: #191919;
+      --bg2: #222222;
+      --bg3: #2E2E2E;
+      --border: #3A3A3A;
+      --text: #EFEFEF;
+      --text2: #A3A3A3;
+      --text3: #707070;
+      --green: #3CAE92;
+      --green-bg: #162C25;
+      --green-bd: #244A3F;
+      --yellow: #D9A048;
+      --yellow-bg: #302410;
+      --yellow-bd: #4D391A;
+      --red: #E86666;
+      --red-bg: #331818;
+      --red-bd: #542525;
+      --blue: #54BCEB;
+      --blue-bg: #162433;
+      --blue-bd: #223D55;
+      --gray-bg: #262626;
+
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+      --input-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #191919;
+        --bg2: #222222;
+        --bg3: #2E2E2E;
+        --border: #3A3A3A;
+        --text: #EFEFEF;
+        --text2: #A3A3A3;
+        --text3: #707070;
+        --green: #3CAE92;
+        --green-bg: #162C25;
+        --green-bd: #244A3F;
+        --yellow: #D9A048;
+        --yellow-bg: #302410;
+        --yellow-bd: #4D391A;
+        --red: #E86666;
+        --red-bg: #331818;
+        --red-bd: #542525;
+        --blue: #54BCEB;
+        --blue-bg: #162433;
+        --blue-bd: #223D55;
+        --gray-bg: #262626;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+        --input-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg2);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    @keyframes checkPop {
+      0% {
+        transform: scale(0);
+      }
+
+      50% {
+        transform: scale(1.2);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-4px);
+      }
+
+      75% {
+        transform: translateX(4px);
+      }
+    }
+
+    /* Layout */
+    .page {
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 48px 64px 80px;
+      background: var(--bg);
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      min-height: calc(100vh - 80px);
+    }
+
+    @media(max-width: 768px) {
+      .page {
+        margin: 0;
+        border-radius: 0;
+        padding: 32px 24px 60px;
+        box-shadow: none;
+        border: none;
+        min-height: 100vh;
+      }
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: all 0.25s ease;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .theme-toggle:hover {
+      background: var(--bg2);
+      transform: scale(1.05);
+    }
+
+    .theme-toggle:active {
+      transform: scale(0.95);
+    }
+
+    /* Typography */
+    .breadcrumb {
+      font-size: 13px;
+      color: var(--text3);
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    .page-header {
+      margin-bottom: 40px;
+    }
+
+    .page-emoji {
+      font-size: 64px;
+      line-height: 1;
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .page-title {
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .page-title.sm {
+      font-size: 28px;
+    }
+
+    .page-desc {
+      font-size: 16px;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+
+    .h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 36px 0 16px;
+      letter-spacing: -0.01em;
+    }
+
+    .h3 {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin: 32px 0 12px;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 32px 0;
+    }
+
+    /* Forms & Inputs */
+    .notion-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      padding: 16px 20px;
+      box-shadow: var(--input-shadow);
+      transition: all 0.2s ease;
+      letter-spacing: -0.01em;
+    }
+
+    .notion-input::placeholder {
+      color: var(--text3);
+      font-weight: 500;
+    }
+
+    .notion-input:focus {
+      border-color: var(--blue);
+      outline: none;
+      box-shadow: 0 0 0 3px var(--blue-bg), var(--input-shadow);
+    }
+
+    textarea.notion-ta {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      resize: vertical;
+      min-height: 80px;
+      line-height: 1.6;
+      box-shadow: var(--input-shadow);
+      transition: all 0.2s ease;
+    }
+
+    textarea.notion-ta::placeholder {
+      color: var(--text3);
+    }
+
+    textarea.notion-ta:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px var(--blue-bg), var(--input-shadow);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .btn-full {
+      width: 100%;
+      margin-top: 16px;
+    }
+
+    .btn-black {
+      background: var(--text);
+      color: var(--bg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-black:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      opacity: 0.95;
+    }
+
+    .btn-black:active {
+      transform: translateY(0) scale(0.98);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-black:disabled {
+      background: var(--bg3);
+      color: var(--text3);
+      box-shadow: none;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    [data-theme="dark"] .btn-black {
+      background: #FFFFFF;
+      color: #000000;
+    }
+
+    .btn-green {
+      background: var(--green);
+      color: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(15, 123, 108, 0.2);
+    }
+
+    .btn-green:hover {
+      background: #0c6356;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(15, 123, 108, 0.3);
+    }
+
+    .btn-green:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .btn-green:disabled {
+      background: var(--bg3);
+      color: var(--text3);
+      box-shadow: none;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-red {
+      background: var(--red);
+      color: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(217, 48, 37, 0.2);
+    }
+
+    .btn-red:hover {
+      background: #C5221F;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(217, 48, 37, 0.3);
+    }
+
+    .btn-red:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .btn-light {
+      background: var(--bg2);
+      color: var(--text2);
+      border: 1px solid var(--border);
+    }
+
+    .btn-light:hover {
+      background: var(--bg3);
+      color: var(--text);
+      border-color: var(--text3);
+    }
+
+    .btn-light:active {
+      transform: scale(0.98);
+    }
+
+    .btn-ghost-sm {
+      background: none;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-ghost-sm:hover {
+      color: var(--text);
+      background: var(--bg2);
+    }
+
+    /* Day Pills */
+    .day-pill {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      color: var(--text2);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .day-pill:hover {
+      border-color: var(--text3);
+      color: var(--text);
+      background: var(--bg);
+      transform: translateY(-1px);
+    }
+
+    .day-pill.selected {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+
+    [data-theme="dark"] .day-pill.selected {
+      background: #FFFFFF;
+      color: #000000;
+      border-color: #FFFFFF;
+    }
+
+    /* Callouts & Tags */
+    .callout {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+
+    .callout-yellow {
+      background: var(--yellow-bg);
+      border: 1px solid var(--yellow-bd);
+    }
+
+    .callout-blue {
+      background: var(--blue-bg);
+      border: 1px solid var(--blue-bd);
+    }
+
+    .callout-green {
+      background: var(--green-bg);
+      border: 1px solid var(--green-bd);
+    }
+
+    .callout-gray {
+      background: var(--gray-bg);
+      border: 1px solid var(--border);
+    }
+
+    .callout-red {
+      background: var(--red-bg);
+      border: 1px solid var(--red-bd);
+    }
+
+    .callout-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      line-height: 1.4;
+    }
+
+    .callout-body {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .callout-body strong {
+      font-weight: 600;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .tag-green {
+      background: var(--green-bg);
+      color: var(--green);
+      border: 1px solid var(--green-bd);
+    }
+
+    .tag-blue {
+      background: var(--blue-bg);
+      color: var(--blue);
+      border: 1px solid var(--blue-bd);
+    }
+
+    .tag-gray {
+      background: var(--gray-bg);
+      color: var(--text2);
+      border: 1px solid var(--border);
+    }
+
+    /* Progress Section */
+    .prog-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .prog-wrap {
+      background: var(--bg3);
+      border-radius: 100px;
+      height: 8px;
+      overflow: hidden;
+      margin-bottom: 8px;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .prog-bar {
+      height: 100%;
+      background: var(--green);
+      border-radius: 100px;
+      transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: prog 0.8s ease both;
+    }
+
+    .prog-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+    }
+
+    .day-counter {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text2);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 14px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .day-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .day-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+    }
+
+    .day-dot.active {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .day-dot.today {
+      background: var(--blue);
+      border-color: var(--blue);
+      box-shadow: 0 0 0 2px var(--blue-bg);
+    }
+
+    /* Todo List */
+    .todo {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 8px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .todo:hover {
+      background: var(--bg2);
+      border-color: var(--border);
+    }
+
+    .todo-box {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--text3);
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+      background: var(--bg);
+      cursor: pointer;
+    }
+
+    .todo-box.done {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .todo-box.done::after {
+      content: '';
+      width: 9px;
+      height: 5px;
+      border-left: 2px solid white;
+      border-bottom: 2px solid white;
+      transform: rotate(-45deg) translateY(-1px);
+      animation: checkPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .todo-label {
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.5;
+      flex: 1;
+      font-weight: 400;
+      transition: color 0.2s ease;
+    }
+
+    .todo-label.done {
+      text-decoration: line-through;
+      color: var(--text3);
+    }
+
+    .todo-day {
+      font-size: 12px;
+      color: var(--text3);
+      margin-right: 4px;
+      flex-shrink: 0;
+      margin-top: 4px;
+      font-weight: 600;
+      width: 80px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .todo-day.today-day {
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    /* Meta Properties */
+    .prop-row {
+      display: flex;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 15px;
+    }
+
+    .prop-name {
+      width: 140px;
+      flex-shrink: 0;
+      color: var(--text2);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .prop-val {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* Loader */
+    .loader {
+      padding: 48px 0;
+      text-align: center;
+    }
+
+    .loader-ring {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.8s cubic-bezier(0.6, 0.2, 0.4, 0.8) infinite;
+      margin: 0 auto 16px;
+    }
+
+    .loader-text {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text2);
+      animation: pulse 2s ease infinite;
+    }
+
+    .prog-step {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text3);
+      padding: 8px 0;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .prog-step.active {
+      color: var(--blue);
+      transform: scale(1.02);
+    }
+
+    .prog-step.active::before {
+      content: "⏳";
+      font-size: 16px;
+    }
+
+    .prog-step.done {
+      color: var(--green);
+    }
+
+    .prog-step.done::before {
+      content: "✅";
+      font-size: 16px;
+    }
+
+    /* Miscellaneous */
+    .ignored-item {
+      font-size: 14px;
+      color: var(--text3);
+      padding: 4px 0;
+      text-decoration: line-through;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ignored-item::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      background: var(--text3);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .error-block {
+      display: none;
+      padding: 12px 16px;
+      background: var(--red-bg);
+      border: 1px solid var(--red-bd);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--red);
+      margin-top: 12px;
+      animation: shake 0.4s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .report-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
+    }
+
+    .report-row:last-child {
+      border-bottom: none;
+    }
+
+    .report-val {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Adapt panel */
+    .adapt-panel {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 16px;
+      display: none;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .adapt-panel.open {
+      display: block;
+      animation: fadeIn 0.3s ease both;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+      animation: fadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+  </style>
+</head>
+
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Toggle dark mode">🌙</button>
+  <div class="page">
+    <div class="breadcrumb">🏠 My Workspace <span>›</span> OneTask</div>
+
+    <div id="screen-set" class="screen active">
+      <div class="page-header">
+        <span class="page-emoji">🎯</span>
+        <h1 class="page-title">OneTask</h1>
+        <p class="page-desc">AI turns one focus into a structured weekly execution plan inside Notion.</p>
+      </div>
+      <div class="divider"></div>
+
+      <div class="h2">What's your one focus this week?</div>
+      <input type="text" class="notion-input" id="task-input"
+        placeholder="e.g. Learn Python, Build portfolio, Write business plan" maxlength="120" autocomplete="off" />
+
+      <div class="divider"></div>
+
+      <div style="margin-bottom:24px;">
+        <div
+          style="font-size:14px; font-weight:600; color:var(--text); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+          <span>📝</span> Context (Optional)
+        </div>
+        <p style="font-size:13px; color:var(--text2); margin-bottom:12px;">Help AI personalize your plan based on your
+          schedule or level.</p>
+        <textarea class="notion-ta" id="context-input" rows="2"
+          placeholder="e.g. I'm a beginner / I have 2 hours daily / I prefer videos over reading / deadline is Friday..."></textarea>
+      </div>
+
+      <div style="margin-bottom:32px;">
+        <div
+          style="font-size:14px; font-weight:600; color:var(--text); margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+          <span>📅</span> Duration
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="day-pill" onclick="selectDays(0)" id="pill-0">Let AI decide</button>
+          <button class="day-pill" onclick="selectDays(3)" id="pill-3">3 days</button>
+          <button class="day-pill" onclick="selectDays(4)" id="pill-4">4 days</button>
+          <button class="day-pill" onclick="selectDays(5)" id="pill-5">5 days</button>
+          <button class="day-pill" onclick="selectDays(7)" id="pill-7">Full week (7)</button>
+        </div>
+      </div>
+
+      <button class="btn btn-black btn-full" id="set-btn" onclick="setFocus()">→ Set my weekly focus</button>
+      <div style="font-size:13px; color:var(--text3); text-align:center; margin-top:16px; font-weight:500;">
+        Existing page content is never replaced without your confirmation.
+      </div>
+      <div class="error-block" id="set-error"></div>
+    </div>
+
+    <div id="screen-focus-warn" class="screen">
+      <div class="page-header">
+        <span class="page-emoji">🚨</span>
+        <h1 class="page-title sm">Active Focus Detected!</h1>
+        <p class="page-desc">The agent caught you trying to switch context.</p>
+      </div>
+      <div class="divider"></div>
+      <div class="callout callout-red">
+        <span class="callout-icon">🛑</span>
+        <div class="callout-body">
+          You already have an active focus this week: <strong id="warn-active-task">—</strong>.<br><br>
+          Changing your focus mid-week breaks your commitment and ruins momentum. Are you absolutely sure you want to
+          abandon it for <strong id="warn-new-task">—</strong>?
+        </div>
+      </div>
+      <button class="btn btn-red btn-full" onclick="forceFocusOverride()">→ Yes, I understand I'm breaking my current
+        commitment</button>
+      <button class="btn btn-light btn-full" style="margin-top:12px;" onclick="show('screen-set')">← No, I'll stick to
+        my current focus</button>
+    </div>
+
+    <div id="screen-confirm" class="screen">
+      <div class="page-header">
+        <span class="page-emoji">⚠️</span>
+        <h1 class="page-title sm">Page has content</h1>
+        <p class="page-desc" id="confirm-task-name">—</p>
+      </div>
+      <div class="divider"></div>
+      <div class="callout callout-yellow">
+        <span class="callout-icon">📝</span>
+        <div class="callout-body">
+          This task page already has content. Do you want to replace it with the new AI-generated weekly plan?
+        </div>
+      </div>
+      <button class="btn btn-black btn-full" onclick="confirmOverwrite()">→ Yes, replace with new plan</button>
+      <button class="btn btn-light btn-full" style="margin-top:12px;" onclick="show('screen-set')">← No, keep existing
+        content</button>
+    </div>
+
+    <div id="screen-loading" class="screen">
+      <div class="page-header">
+        <span class="page-emoji">⏳</span>
+        <h1 class="page-title">Hang tight...</h1>
+        <p class="page-desc" id="loader-main">Reading your Notion workspace...</p>
+      </div>
+      <div class="divider"></div>
+      <div class="loader">
+        <div class="loader-ring"></div>
+        <div class="loader-text" id="loader-sub">AI is planning your week</div>
+      </div>
+      <div style="margin-top:32px; display:flex; flex-direction:column; gap:12px;" id="progress-steps">
+        <div class="prog-step" id="pstep-1">⏳ Reading your Notion workspace</div>
+        <div class="prog-step" id="pstep-2">⏳ Building your weekly plan</div>
+        <div class="prog-step" id="pstep-3">⏳ Writing to Notion</div>
+      </div>
+    </div>
+
+    <div id="screen-dash" class="screen">
+      <div class="page-header">
+        <span class="page-emoji">🎯</span>
+        <h1 class="page-title" id="dash-title">—</h1>
+        <p class="page-desc" id="dash-reason">Your one focus this week</p>
+      </div>
+
+      <div style="margin-bottom:24px;">
+        <div class="prop-row">
+          <div class="prop-name">📅 Week</div>
+          <div class="prop-val" id="dash-week">—</div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-name">⏱ Today</div>
+          <div class="prop-val" id="dash-today">—</div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-name">🔖 Status</div>
+          <div class="prop-val"><span class="tag tag-blue" id="dash-status">● In Progress</span></div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="day-counter">
+        <span id="day-label">Day 1 of 7</span>
+        <div class="day-dots" id="day-dots"></div>
+      </div>
+
+      <div class="prog-row">
+        <span class="prog-label" id="dash-prog-label">0 of 0 steps done</span>
+        <span class="prog-label" id="dash-pct" style="font-weight:700; color:var(--text); font-size:14px;">0%</span>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-bar" id="dash-bar" style="width:0%"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="h2">Today's Step</div>
+      <div class="callout callout-blue" id="today-callout" style="padding:20px;">
+        <span class="callout-icon">▶</span>
+        <div class="callout-body">
+          <div id="today-step" style="font-weight:500; font-size:16px; margin-bottom:16px;">—</div>
+          <button class="btn btn-green" id="done-btn" onclick="markDone()">✓ Mark as done</button>
+        </div>
+      </div>
+
+      <div class="callout callout-yellow" style="margin-top:16px;">
+        <span class="callout-icon">💡</span>
+        <div class="callout-body" id="dash-tip">—</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div class="h2" style="margin:0;">Weekly Plan</div>
+        <button class="btn-ghost-sm" onclick="toggleAdapt()">✏️ Adjust this plan</button>
+      </div>
+
+      <div class="adapt-panel" id="adapt-panel">
+        <div style="font-size:14px; font-weight:600; color:var(--text); margin-bottom:8px;">Rewrite for your actual
+          level</div>
+        <p style="font-size:13px; color:var(--text2); margin-bottom:12px;">Describe your situation and AI will adapt the
+          remaining steps.</p>
+        <textarea class="notion-ta" id="adapt-input" rows="2"
+          placeholder="e.g. I have more time this week, I prefer hands-on tasks..."></textarea>
+
+        <div style="margin-top:16px; margin-bottom:8px;">
+          <div style="font-size:13px; font-weight:500; color:var(--text); margin-bottom:8px;">Change duration
+            (optional):</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="day-pill" onclick="selectAdaptDays(0)" id="adapt-pill-0"
+              style="padding:6px 12px; font-size:12px;">Keep same</button>
+            <button class="day-pill" onclick="selectAdaptDays(3)" id="adapt-pill-3"
+              style="padding:6px 12px; font-size:12px;">3 days</button>
+            <button class="day-pill" onclick="selectAdaptDays(4)" id="adapt-pill-4"
+              style="padding:6px 12px; font-size:12px;">4 days</button>
+            <button class="day-pill" onclick="selectAdaptDays(5)" id="adapt-pill-5"
+              style="padding:6px 12px; font-size:12px;">5 days</button>
+            <button class="day-pill" onclick="selectAdaptDays(7)" id="adapt-pill-7"
+              style="padding:6px 12px; font-size:12px;">7 days</button>
+          </div>
+        </div>
+
+        <button class="btn btn-black" style="margin-top:16px; width:100%;" id="adapt-btn" onclick="adaptSteps()">
+          → Rewrite steps
+        </button>
+        <div class="error-block" id="adapt-error"></div>
+      </div>
+
+      <div style="margin-top:16px;" id="all-steps"></div>
+
+      <div class="callout callout-gray" style="margin-top:24px;">
+        <span class="callout-icon">🔄</span>
+        <div class="callout-body" style="font-size:14px; color:var(--text2);">
+          Steps are synced with Notion. You can also edit them directly in Notion — changes will reflect here on next
+          open.
+        </div>
+      </div>
+
+      <div id="ignored-wrap" style="display:none;">
+        <div class="divider"></div>
+        <div class="h2">Ignored this week</div>
+        <div id="ignored-list" style="margin-top:12px;"></div>
+      </div>
+
+      <div class="divider"></div>
+      <button class="btn-ghost-sm" onclick="showChangeScreen()" style="font-size:14px; color:var(--text3);">Want to
+        change your focus this week?</button>
+    </div>
+
+    <div id="screen-change" class="screen">
+      <div class="page-header">
+        <span class="page-emoji">🔒</span>
+        <h1 class="page-title sm">Change your focus?</h1>
+      </div>
+      <div class="divider"></div>
+      <div class="callout callout-red">
+        <span class="callout-icon">⚠️</span>
+        <div class="callout-body">
+          You're on <strong id="change-day">Day 1</strong> of your week.
+          Switching tasks breaks momentum. The agent takes your focus seriously.
+        </div>
+      </div>
+      <div class="h2">Why do you want to change?</div>
+      <textarea class="notion-ta" id="change-reason" rows="3"
+        placeholder="Give a real reason. e.g. A deadline appeared that directly affects my work..."></textarea>
+      <button class="btn btn-black btn-full" onclick="submitChange()">→ Send to agent for review</button>
+      <button class="btn btn-light btn-full" style="margin-top:12px;" onclick="show('screen-dash')">← Cancel — keep my
+        focus</button>
+      <div class="error-block" id="change-error"></div>
+    </div>
+
+    <div id="screen-complete" class="screen">
+      <div class="page-header">
+        <span class="page-emoji">🏁</span>
+        <h1 class="page-title">Week complete!</h1>
+        <p class="page-desc" id="complete-task">—</p>
+      </div>
+      <div class="divider"></div>
+      <div class="callout" id="complete-callout">
+        <span class="callout-icon">🎉</span>
+        <div class="callout-body" id="complete-msg">—</div>
+      </div>
+      <div class="h2">Weekly Summary</div>
+      <div id="week-report"
+        style="background:var(--bg2); padding:16px 24px; border-radius:12px; border:1px solid var(--border);"></div>
+      <div class="divider"></div>
+      <button class="btn btn-black btn-full" onclick="startNewWeek()">→ Start a new week</button>
+    </div>
+
+  </div>
+
+  <script>
+    const API = 'http://localhost:3001';
+    let state = JSON.parse(localStorage.getItem('onetask') || 'null');
+    let selectedDays = 0;
+
+    // ── DARK MODE ─────────────────────────────────────────
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.getElementById('theme-btn').textContent = next === 'dark' ? '☀️' : '🌙';
+      localStorage.setItem('onetask_theme', next);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('onetask_theme');
+      if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+        document.getElementById('theme-btn').textContent = saved === 'dark' ? '☀️' : '🌙';
+      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('theme-btn').textContent = '☀️';
+      }
+    });
+
+    function selectDays(n) {
+      selectedDays = n;
+      document.querySelectorAll('#screen-set .day-pill').forEach(p => p.classList.remove('selected'));
+      document.getElementById(`pill-${n}`).classList.add('selected');
+    }
+
+    // ── INIT ──────────────────────────────────────────────
+    window.onload = async () => {
+      if (state) {
+        await syncFromNotion();
+        checkWeekStatus();
+      } else {
+        show('screen-set');
+      }
+      document.getElementById('task-input')
+        .addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) setFocus(); });
+      selectDays(0);
+    };
+
+    // ── SETUP ─────────────────────────────────────────────
+    function show(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function setMsg(main, sub) {
+      document.getElementById('loader-main').textContent = main || '';
+      document.getElementById('loader-sub').textContent = sub || '';
+    }
+
+    function setProgressStep(step) {
+      for (let i = 1; i <= 3; i++) {
+        const el = document.getElementById(`pstep-${i}`);
+        if (!el) continue;
+        el.className = 'prog-step';
+
+        const texts = [
+          'Reading your Notion workspace',
+          'Building your weekly plan',
+          'Writing to Notion'
+        ];
+        el.textContent = texts[i - 1];
+
+        if (i < step) {
+          el.classList.add('done');
+        } else if (i === step) {
+          el.classList.add('active');
+        }
+      }
+    }
+
+    function showErr(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = '⚠ ' + msg;
+      el.style.display = 'block';
+    }
+
+    function save() { localStorage.setItem('onetask', JSON.stringify(state)); }
+
+    // ── SYNC FROM NOTION ──────────────────────────────────
+    async function syncFromNotion() {
+      if (!state?.taskId) return;
+      try {
+        const res = await fetch(`${API}/sync`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ task_id: state.taskId })
+        });
+        const data = await res.json();
+        if (!data.success || !data.steps?.length) return;
+
+        data.steps.forEach((notionStep, i) => {
+          if (state.steps[i]) {
+            if (notionStep.done && !state.steps[i].done) {
+              state.steps[i].done = true;
+              state.steps[i].block_id = notionStep.block_id;
+            }
+            if (notionStep.text && notionStep.text !== state.steps[i].text) {
+              state.steps[i].text = notionStep.text;
+              state.steps[i].block_id = notionStep.block_id;
+            }
+          }
+        });
+
+        const next = state.steps.findIndex(s => !s.done);
+        if (next !== -1) state.currentStep = next;
+        save();
+      } catch (e) {
+        console.log('Sync skipped:', e.message);
+      }
+    }
+
+    // ── WEEK STATUS ───────────────────────────────────────
+    function checkWeekStatus() {
+      const days = Math.floor((Date.now() - new Date(state.since)) / 86400000);
+      if (days >= 7) { renderComplete(); show('screen-complete'); }
+      else { renderDash(); show('screen-dash'); }
+    }
+
+    // ── SET FOCUS ─────────────────────────────────────────
+    async function setFocus() {
+      const task = document.getElementById('task-input').value.trim();
+      const context = document.getElementById('context-input').value.trim();
+      if (!task) { showErr('set-error', 'Please enter your focus task.'); return; }
+
+      document.getElementById('set-error').style.display = 'none';
+      document.getElementById('set-btn').disabled = true;
+      show('screen-loading');
+      setMsg('Reading your Notion workspace...', 'AI is planning your week');
+
+      try {
+        await new Promise(r => setTimeout(r, 600));
+        setProgressStep(1);
+        setMsg('Reading your Notion workspace...', 'Fetching your tasks');
+
+        const res = await fetch(`${API}/set-focus`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ task, user_description: context, days_count: selectedDays, force_focus_override: false })
+        });
+        setProgressStep(2);
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+
+        if (data.requires_focus_override) {
+          document.getElementById('warn-active-task').textContent = data.active_task_name;
+          document.getElementById('warn-new-task').textContent = data.task_name;
+          window._pendingFocusOverride = { task, context, days_count: selectedDays };
+          document.getElementById('set-btn').disabled = false;
+          show('screen-focus-warn');
+          return;
+        }
+
+        if (data.has_content) {
+          document.getElementById('confirm-task-name').textContent = data.task_name;
+          window._pendingFocus = {
+            task_id: data.task_id, task_name: data.task_name,
+            reason: data.reason, tip: data.tip, ignored: data.ignored,
+            context, days_count: selectedDays
+          };
+          document.getElementById('set-btn').disabled = false;
+          show('screen-confirm');
+          return;
+        }
+
+        setProgressStep(3);
+        await new Promise(r => setTimeout(r, 400));
+
+        state = {
+          taskId: data.task_id,
+          taskName: data.task_name,
+          reason: data.reason,
+          steps: data.steps,
+          tip: data.tip,
+          ignored: data.ignored || [],
+          currentStep: data.today_idx || 0,
+          since: new Date().toISOString(),
+        };
+        save();
+        renderDash();
+        show('screen-dash');
+      } catch (e) {
+        show('screen-set');
+        document.getElementById('set-btn').disabled = false;
+        showErr('set-error', e.message);
+      }
+    }
+
+    async function forceFocusOverride() {
+      const p = window._pendingFocusOverride;
+      if (!p) return;
+
+      show('screen-loading');
+      setProgressStep(1);
+      setMsg('Overriding strict mode...', 'Fetching your tasks');
+
+      try {
+        const res = await fetch(`${API}/set-focus`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ task: p.task, user_description: p.context, days_count: p.days_count, force_focus_override: true })
+        });
+        setProgressStep(2);
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+
+        if (data.has_content) {
+          document.getElementById('confirm-task-name').textContent = data.task_name;
+          window._pendingFocus = {
+            task_id: data.task_id, task_name: data.task_name,
+            reason: data.reason, tip: data.tip, ignored: data.ignored,
+            context: p.context, days_count: p.days_count
+          };
+          show('screen-confirm');
+          return;
+        }
+
+        setProgressStep(3);
+        await new Promise(r => setTimeout(r, 400));
+
+        state = {
+          taskId: data.task_id,
+          taskName: data.task_name,
+          reason: data.reason,
+          steps: data.steps,
+          tip: data.tip,
+          ignored: data.ignored || [],
+          currentStep: data.today_idx || 0,
+          since: new Date().toISOString(),
+        };
+        window._pendingFocusOverride = null;
+        save();
+        renderDash();
+        show('screen-dash');
+      } catch (e) {
+        show('screen-set');
+        showErr('set-error', e.message);
+      }
+    }
+
+    // ── CONFIRM OVERWRITE ────────────────────────────────
+    async function confirmOverwrite() {
+      const p = window._pendingFocus;
+      if (!p) { show('screen-set'); return; }
+
+      show('screen-loading');
+      setProgressStep(3);
+      setMsg('Replacing content with new plan...', 'AI is writing your week plan');
+
+      try {
+        const res = await fetch(`${API}/confirm-overwrite`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            task_id: p.task_id, task_name: p.task_name,
+            user_description: p.context || '', days_count: p.days_count || 0
+          })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+
+        state = {
+          taskId: p.task_id, taskName: p.task_name,
+          reason: data.reason || p.reason,
+          steps: data.steps, tip: data.tip,
+          ignored: p.ignored || [],
+          currentStep: data.today_idx || 0,
+          since: new Date().toISOString()
+        };
+        window._pendingFocus = null;
+        save(); renderDash(); show('screen-dash');
+      } catch (e) {
+        show('screen-set');
+        showErr('set-error', e.message);
+      }
+    }
+
+    async function markDone() {
+      const btn = document.getElementById('done-btn');
+      const step = state.steps[state.currentStep];
+      if (!step || step.done) return;
+
+      btn.disabled = true;
+      btn.textContent = 'Updating Notion...';
+
+      try {
+        const res = await fetch(`${API}/mark-done`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            step_id: step.id,
+            block_id: step.block_id || '',
+            task_id: state.taskId
+          })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+
+        state.steps[state.currentStep].done = true;
+        const next = state.steps.findIndex((s, i) => i > state.currentStep && !s.done);
+        if (next !== -1) state.currentStep = next;
+        save();
+        renderDash();
+      } catch (e) {
+        btn.disabled = false;
+        btn.textContent = '✓ Mark as done';
+        alert('Error: ' + e.message);
+      }
+    }
+
+    // ── ADAPT STEPS ───────────────────────────────────────
+    let adaptDays = 0;
+    function selectAdaptDays(n) {
+      adaptDays = n;
+      document.querySelectorAll('[id^="adapt-pill-"]').forEach(p => p.classList.remove('selected'));
+      document.getElementById(`adapt-pill-${n}`).classList.add('selected');
+    }
+
+    function toggleAdapt() {
+      const panel = document.getElementById('adapt-panel');
+      panel.classList.toggle('open');
+      if (panel.classList.contains('open')) selectAdaptDays(0);
+    }
+
+    async function adaptSteps() {
+      const desc = document.getElementById('adapt-input').value.trim();
+      if (!desc) { showErr('adapt-error', 'Please describe your level or situation.'); return; }
+
+      const adaptBtn = document.getElementById('adapt-btn');
+      adaptBtn.disabled = true;
+      adaptBtn.textContent = 'Adapting...';
+
+      document.getElementById('adapt-error').style.display = 'none';
+      show('screen-loading');
+
+      const psteps = document.getElementById('progress-steps');
+      if (psteps) psteps.style.display = 'none';
+
+      setMsg('Rewriting steps for your level...', 'AI is adapting the plan');
+
+      try {
+        const res = await fetch(`${API}/adapt-steps`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            task_id: state.taskId,
+            task_name: state.taskName,
+            current_steps: state.steps.map(s => s.text),
+            current_states: state.steps.map(s => s.done),
+            user_description: desc,
+            days_count: adaptDays || 0
+          })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+
+        state.steps = data.steps;
+        state.tip = data.tip;
+        state.currentStep = data.today_idx || 0;
+        save();
+
+        document.getElementById('adapt-panel').classList.remove('open');
+        document.getElementById('adapt-input').value = '';
+
+        if (psteps) psteps.style.display = 'flex';
+        adaptBtn.disabled = false;
+        adaptBtn.textContent = '→ Rewrite steps';
+
+        renderDash();
+        show('screen-dash');
+
+        setTimeout(() => {
+          const c = document.createElement('div');
+          c.className = 'callout callout-green';
+          c.style.marginBottom = '12px';
+          c.innerHTML = `<span class="callout-icon">✅</span><div class="callout-body">${data.message}</div>`;
+          const dash = document.getElementById('screen-dash');
+          dash.insertBefore(c, dash.querySelector('.page-header').nextSibling);
+          setTimeout(() => c.remove(), 5000);
+        }, 100);
+
+      } catch (e) {
+        if (psteps) psteps.style.display = 'flex';
+        adaptBtn.disabled = false;
+        adaptBtn.textContent = '→ Rewrite steps';
+        show('screen-dash');
+        alert('Error: ' + e.message);
+      }
+    }
+
+    // ── RENDER DASHBOARD ──────────────────────────────────
+    function renderDash() {
+      if (!state) return;
+      const { taskName, reason, steps, tip, currentStep, ignored, since } = state;
+      const done = steps.filter(s => s.done).length;
+      const total = steps.length;
+      const pct = total ? Math.round((done / total) * 100) : 0;
+      const allDone = done === total;
+      const dayNum = Math.min(Math.floor((Date.now() - new Date(since)) / 86400000) + 1, 7);
+      const todayName = new Date().toLocaleDateString('en', { weekday: 'long' });
+
+      document.getElementById('dash-title').textContent = taskName;
+      document.getElementById('dash-reason').textContent = reason || 'Your one focus this week';
+
+      const ws = new Date(since);
+      const we = new Date(since); we.setDate(we.getDate() + 6);
+      document.getElementById('dash-week').textContent =
+        `${ws.toLocaleDateString('en', { month: 'short', day: 'numeric' })} – ${we.toLocaleDateString('en', { month: 'short', day: 'numeric' })}`;
+      document.getElementById('dash-today').textContent = todayName;
+
+      const statusEl = document.getElementById('dash-status');
+      if (allDone) { statusEl.textContent = '✓ Completed'; statusEl.className = 'tag tag-green'; }
+      else { statusEl.textContent = '● In Progress'; statusEl.className = 'tag tag-blue'; }
+
+      document.getElementById('day-label').textContent = `Day ${dayNum} of 7`;
+      document.getElementById('day-dots').innerHTML = Array.from({ length: 7 }, (_, i) =>
+        `<div class="day-dot ${i + 1 < dayNum ? 'active' : i + 1 === dayNum ? 'today' : ''}"></div>`
+      ).join('');
+
+      document.getElementById('dash-prog-label').textContent = `${done} of ${total} steps done`;
+      document.getElementById('dash-pct').textContent = pct + '%';
+      document.getElementById('dash-bar').style.width = pct + '%';
+
+      const step = steps[currentStep] || steps[steps.length - 1];
+      const btn = document.getElementById('done-btn');
+      if (allDone) {
+        document.getElementById('today-callout').className = 'callout callout-green';
+        document.getElementById('today-step').textContent = '🎉 All steps done! Great week.';
+        btn.style.display = 'none';
+      } else {
+        document.getElementById('today-callout').className = 'callout callout-blue';
+        document.getElementById('today-step').textContent = step?.text || '—';
+        btn.style.display = '';
+        if (step?.done) {
+          btn.textContent = '✓ Done'; btn.disabled = true; btn.className = 'btn btn-light';
+        } else {
+          btn.textContent = '✓ Mark as done'; btn.disabled = false; btn.className = 'btn btn-green';
+        }
+      }
+
+      document.getElementById('dash-tip').textContent = tip || '—';
+
+      document.getElementById('all-steps').innerHTML = steps.map((s, i) => {
+        const isToday = s.day?.toLowerCase() === todayName.toLowerCase();
+        return `
+      <div class="todo">
+        <div class="todo-day ${isToday ? 'today-day' : ''}">${s.day || ''}</div>
+        <div class="todo-box ${s.done ? 'done' : ''}"></div>
+        <div class="todo-label ${s.done ? 'done' : ''}">${s.text}</div>
+      </div>`;
+      }).join('');
+
+      if (ignored?.length) {
+        document.getElementById('ignored-wrap').style.display = 'block';
+        document.getElementById('ignored-list').innerHTML =
+          ignored.map(t => `<div class="ignored-item">${t}</div>`).join('');
+      } else {
+        document.getElementById('ignored-wrap').style.display = 'none';
+      }
+    }
+
+    // ── CHANGE SCREEN ─────────────────────────────────────
+    function showChangeScreen() {
+      const d = Math.min(Math.floor((Date.now() - new Date(state.since)) / 86400000) + 1, 7);
+      document.getElementById('change-day').textContent = `Day ${d}`;
+      show('screen-change');
+    }
+
+    async function submitChange() {
+      const reason = document.getElementById('change-reason').value.trim();
+      if (!reason) { showErr('change-error', 'Please explain why.'); return; }
+      document.getElementById('change-error').style.display = 'none';
+
+      const psteps = document.getElementById('progress-steps');
+      if (psteps) psteps.style.display = 'none';
+
+      show('screen-loading');
+      setMsg('Agent is reviewing your request...', 'This will only take a second');
+
+      try {
+        const dayNum = Math.floor((Date.now() - new Date(state.since)) / 86400000) + 1;
+        const done = state.steps.filter(s => s.done).length;
+        const res = await fetch(`${API}/request-change`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            current_task: state.taskName, reason,
+            day_num: dayNum, steps_done: done, total_steps: state.steps.length
+          })
+        });
+        const data = await res.json();
+
+        if (psteps) psteps.style.display = 'flex';
+
+        if (data.approved) {
+          localStorage.removeItem('onetask'); state = null;
+          document.getElementById('task-input').value = '';
+          document.getElementById('set-btn').disabled = false;
+          show('screen-set');
+          setTimeout(() => {
+            const c = document.createElement('div');
+            c.className = 'callout callout-green'; c.style.marginBottom = '16px';
+            c.innerHTML = `<span class="callout-icon">✅</span><div class="callout-body">${data.message}</div>`;
+            document.getElementById('screen-set').insertBefore(c,
+              document.getElementById('screen-set').querySelector('.h2'));
+          }, 100);
+        } else {
+          show('screen-change');
+          showErr('change-error', data.message);
+        }
+      } catch (e) {
+        if (psteps) psteps.style.display = 'flex';
+        show('screen-change'); showErr('change-error', e.message);
+      }
+    }
+
+    // ── WEEK COMPLETE ─────────────────────────────────────
+    function renderComplete() {
+      if (!state) return;
+      const done = state.steps.filter(s => s.done).length, total = state.steps.length;
+      const pct = total ? Math.round((done / total) * 100) : 0;
+      document.getElementById('complete-task').textContent = state.taskName;
+      document.getElementById('complete-msg').textContent =
+        pct === 100 ? `You completed all ${total} steps. Excellent week! 🎉`
+          : `You completed ${done} of ${total} steps (${pct}%). Keep the momentum!`;
+      document.getElementById('complete-callout').className =
+        `callout ${pct === 100 ? 'callout-green' : 'callout-yellow'}`;
+      document.getElementById('week-report').innerHTML = `
+    <div class="report-row"><span>Focus Task</span><span class="report-val">${state.taskName}</span></div>
+    <div class="report-row"><span>Steps Completed</span><span class="report-val">${done} / ${total}</span></div>
+    <div class="report-row"><span>Completion Rate</span><span class="report-val">${pct}%</span></div>
+    <div class="report-row"><span>Week Started</span><span class="report-val">${new Date(state.since).toLocaleDateString('en', { month: 'long', day: 'numeric' })}</span></div>`;
+    }
+
+    // ✅ FIX: تم إضافة اللوجيك الخاص بتحديث Notion عند إنهاء الأسبوع
+    async function startNewWeek() {
+      if (state && state.taskId) {
+        const done = state.steps.filter(s => s.done).length;
+        const total = state.steps.length;
+        const pct = total ? Math.round((done / total) * 100) : 0;
+
+        const btn = document.querySelector('#screen-complete .btn-black');
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Updating Notion...';
+
+        try {
+          await fetch(`${API}/finish-week`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ task_id: state.taskId, pct: pct })
+          });
+        } catch (e) {
+          console.error('Failed to finish week in Notion:', e);
+        }
+
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }
+
+      localStorage.removeItem('onetask');
+      state = null;
+      document.getElementById('task-input').value = '';
+      document.getElementById('context-input').value = '';
+      document.getElementById('set-btn').disabled = false;
+      show('screen-set');
+    }
+  </script>
+</body>
+
+</html>
