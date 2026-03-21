@@ -10,8 +10,7 @@
 
 ## Demo
 
-> Demo video coming soon — this section will include a walkthrough of the weekly planning flow, Notion sync, and focus guardian behavior.
-
+[![OneTask Demo](https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg)](https://youtu.be/NnrM6ALD79Y)
 ---
 
 ## The Problem
