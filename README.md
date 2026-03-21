@@ -10,7 +10,8 @@
 
 ## Demo
 
-[![OneTask Demo](https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg)](https://youtu.be/NnrM6ALD79Y)
+> 🎬 [▶ Watch OneTask Demo on YouTube](https://youtu.be/NnrM6ALD79Y)
+
 ---
 
 ## The Problem
