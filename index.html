@@ -413,6 +413,7 @@
       transform: none;
     }
 
+    /* Red button style */
     .btn-red {
       background: var(--red);
       color: #FFFFFF;
@@ -930,6 +931,131 @@
         Existing page content is never replaced without your confirmation.
       </div>
       <div class="error-block" id="set-error"></div>
+
+      <div
+        style="margin-top:28px; padding-top:20px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+        <span style="font-size:13px; color:var(--text3);">New to OneTask?</span>
+        <button class="btn-ghost-sm" onclick="show('screen-setup')" style="display:flex; align-items:center; gap:5px;">
+          📖 Setup Guide
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ SCREEN: SETUP GUIDE ══ -->
+    <div id="screen-setup" class="screen">
+      <div class="page-header">
+        <span class="page-emoji">📖</span>
+        <h1 class="page-title sm">Setup Guide</h1>
+        <p class="page-desc">Get OneTask connected to your Notion workspace in 3 steps.</p>
+      </div>
+      <div class="divider"></div>
+
+      <!-- Step 1 -->
+      <div style="margin-bottom:28px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+          <div
+            style="width:26px; height:26px; border-radius:50%; background:var(--blue); color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            1</div>
+          <div style="font-size:16px; font-weight:600; color:var(--text);">Duplicate the Notion Template</div>
+        </div>
+        <div class="callout callout-blue">
+          <span class="callout-icon">🔗</span>
+          <div class="callout-body">
+            Open the OneTask Notion template and click <strong>Duplicate</strong> to copy it to your workspace. It
+            includes the database, Board view, and all required columns ready to go.
+            <div style="margin-top:12px;">
+              <a href="https://spectacled-myrtle-6ae.notion.site/One-Task-32778c86dfb7809d8e3ee38aa72474cd?pvs=73"
+                target="_blank" style="color:var(--blue); font-weight:600; text-decoration:none; font-size:14px;">→ Open
+                Template ↗</a>
+            </div>
+          </div>
+        </div>
+        <div class="callout callout-gray" style="margin-top:8px;">
+          <span class="callout-icon">⚙️</span>
+          <div class="callout-body" style="font-size:14px;">
+            <strong>Prefer manual setup?</strong> Create a Notion database with these columns:
+            <div
+              style="margin-top:10px; display:grid; grid-template-columns:1fr 1fr; gap:6px 20px; font-size:13px; color:var(--text2);">
+              <span>• <strong style="color:var(--text);">Name</strong> — Title</span>
+              <span>• <strong style="color:var(--text);">Status</strong> — Status</span>
+              <span>• <strong style="color:var(--text);">Priority</strong> — Select</span>
+              <span>• <strong style="color:var(--text);">Notes</strong> — Text</span>
+            </div>
+            <div style="margin-top:8px; font-size:12px; color:var(--text3);">Priority options: Week Focus · High ·
+              Medium · Low</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div style="margin-bottom:28px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+          <div
+            style="width:26px; height:26px; border-radius:50%; background:var(--blue); color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            2</div>
+          <div style="font-size:16px; font-weight:600; color:var(--text);">Create & Connect an Integration</div>
+        </div>
+        <div class="callout callout-yellow">
+          <span class="callout-icon">🔑</span>
+          <div class="callout-body" style="font-size:14px; line-height:1.8;">
+            <strong>A. Create the integration:</strong><br>
+            Go to <a href="https://notion.so/my-integrations" target="_blank"
+              style="color:var(--blue);">notion.so/my-integrations</a> → <strong>New integration</strong> → copy the
+            token → paste it as <code
+              style="background:var(--bg3); padding:2px 6px; border-radius:4px; font-size:12px;">NOTION_TOKEN</code> in
+            your <code style="background:var(--bg3); padding:2px 6px; border-radius:4px; font-size:12px;">.env</code>
+            file.<br><br>
+            <strong>B. Connect it to your database:</strong><br>
+            Open your OneTask page in Notion → click <strong>⋯ (top right)</strong> → <strong>Connections</strong> →
+            search for your integration → confirm.
+          </div>
+        </div>
+        <div
+          style="margin-top:8px; padding:12px 16px; background:var(--red-bg); border:1px solid var(--red-bd); border-radius:8px; font-size:13px; color:var(--red); display:flex; gap:10px; align-items:flex-start;">
+          <span style="flex-shrink:0;">⚠️</span>
+          <span>If the integration is not connected under <strong>Connections</strong>, the app will start but
+            <strong>won't find or update your tasks</strong>.</span>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div style="margin-bottom:28px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+          <div
+            style="width:26px; height:26px; border-radius:50%; background:var(--blue); color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            3</div>
+          <div style="font-size:16px; font-weight:600; color:var(--text);">Find Your Database ID</div>
+        </div>
+        <div class="callout callout-gray">
+          <span class="callout-icon">🔍</span>
+          <div class="callout-body" style="font-size:14px; line-height:1.8;">
+            Open your database in Notion and look at the URL:
+            <div
+              style="margin-top:10px; padding:10px 14px; background:var(--bg3); border-radius:8px; font-family:monospace; font-size:13px; word-break:break-all; line-height:1.7;">
+              notion.so/<span
+                style="background:var(--yellow-bg); color:var(--yellow); padding:1px 4px; border-radius:3px; font-weight:700;">abc123def456789...</span>?v=...
+            </div>
+            <div style="margin-top:10px;">The highlighted part is your <strong>Database ID</strong>. Paste it as <code
+                style="background:var(--bg3); padding:2px 6px; border-radius:4px; font-size:12px;">NOTION_DATABASE_ID</code>
+              in your <code
+                style="background:var(--bg3); padding:2px 6px; border-radius:4px; font-size:12px;">.env</code> file.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Done -->
+      <div class="callout callout-green">
+        <span class="callout-icon">✅</span>
+        <div class="callout-body">
+          <strong>You're all set!</strong> Restart the app after updating your <code
+            style="background:var(--green-bg); padding:2px 6px; border-radius:4px; font-size:13px;">.env</code> file and
+          you're ready to focus.
+        </div>
+      </div>
+
+      <button class="btn btn-black btn-full" onclick="show('screen-set')" style="margin-top:24px;">← Back to
+        OneTask</button>
     </div>
 
     <div id="screen-focus-warn" class="screen">
@@ -1264,7 +1390,8 @@
     // ── WEEK STATUS ───────────────────────────────────────
     function checkWeekStatus() {
       const days = Math.floor((Date.now() - new Date(state.since)) / 86400000);
-      if (days >= 7) { renderComplete(); show('screen-complete'); }
+      const allDone = state.steps.length > 0 && state.steps.every(s => s.done);
+      if (days >= 7 || allDone) { renderComplete(); show('screen-complete'); }
       else { renderDash(); show('screen-dash'); }
     }
 
@@ -1284,14 +1411,17 @@
         setProgressStep(1);
         setMsg('Reading your Notion workspace...', 'Fetching your tasks');
 
+        // ✅ FIX: تم إضافة force_focus_override = false في الطلب الأول
         const res = await fetch(`${API}/set-focus`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ task, user_description: context, days_count: selectedDays, force_focus_override: false })
         });
+
         setProgressStep(2);
         const data = await res.json();
         if (!data.success) throw new Error(data.error);
 
+        // ✅ FIX: التعامل مع الطبقة الأولى (التحذير من التشتت)
         if (data.requires_focus_override) {
           document.getElementById('warn-active-task').textContent = data.active_task_name;
           document.getElementById('warn-new-task').textContent = data.task_name;
@@ -1301,6 +1431,7 @@
           return;
         }
 
+        // Handle second layer — confirm overwrite warning
         if (data.has_content) {
           document.getElementById('confirm-task-name').textContent = data.task_name;
           window._pendingFocus = {
@@ -1336,6 +1467,7 @@
       }
     }
 
+    // Force override confirmed — check if new task page has existing content
     async function forceFocusOverride() {
       const p = window._pendingFocusOverride;
       if (!p) return;
@@ -1353,6 +1485,7 @@
         const data = await res.json();
         if (!data.success) throw new Error(data.error);
 
+        // If new task page has content, ask before overwriting
         if (data.has_content) {
           document.getElementById('confirm-task-name').textContent = data.task_name;
           window._pendingFocus = {
@@ -1447,6 +1580,18 @@
         const next = state.steps.findIndex((s, i) => i > state.currentStep && !s.done);
         if (next !== -1) state.currentStep = next;
         save();
+
+        // If all steps are done, update Notion status to Done immediately
+        const allDone = state.steps.every(s => s.done);
+        if (allDone) {
+          try {
+            await fetch(`${API}/finish-week`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ task_id: state.taskId, pct: 100 })
+            });
+          } catch (e) { console.error('finish-week failed:', e); }
+        }
+
         renderDash();
       } catch (e) {
         btn.disabled = false;
@@ -1677,34 +1822,25 @@
     <div class="report-row"><span>Week Started</span><span class="report-val">${new Date(state.since).toLocaleDateString('en', { month: 'long', day: 'numeric' })}</span></div>`;
     }
 
-    // ✅ FIX: تم إضافة اللوجيك الخاص بتحديث Notion عند إنهاء الأسبوع
     async function startNewWeek() {
       if (state && state.taskId) {
         const done = state.steps.filter(s => s.done).length;
         const total = state.steps.length;
         const pct = total ? Math.round((done / total) * 100) : 0;
-
         const btn = document.querySelector('#screen-complete .btn-black');
-        const originalText = btn.textContent;
         btn.disabled = true;
         btn.textContent = 'Updating Notion...';
-
         try {
           await fetch(`${API}/finish-week`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ task_id: state.taskId, pct: pct })
+            body: JSON.stringify({ task_id: state.taskId, pct })
           });
-        } catch (e) {
-          console.error('Failed to finish week in Notion:', e);
-        }
-
+        } catch (e) { console.error('finish-week failed:', e); }
         btn.disabled = false;
-        btn.textContent = originalText;
+        btn.textContent = '→ Start a new week';
       }
-
-      localStorage.removeItem('onetask');
-      state = null;
+      localStorage.removeItem('onetask'); state = null;
       document.getElementById('task-input').value = '';
       document.getElementById('context-input').value = '';
       document.getElementById('set-btn').disabled = false;
