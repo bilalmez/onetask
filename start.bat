@@ -1,7 +1,7 @@
 @echo off
 echo.
 echo  ==========================================
-echo   OneTask — Notion MCP Edition
+echo   OneTask - Notion MCP Edition
 echo  ==========================================
 echo.
 
@@ -14,7 +14,7 @@ IF NOT EXIST ".env" (
     exit
 )
 
-REM اقرأ NOTION_TOKEN من ملف .env
+REM Read NOTION_TOKEN from .env file
 for /f "usebackq tokens=1,2 delims==" %%a in (".env") do (
     if "%%a"=="NOTION_TOKEN" set NOTION_TOKEN=%%b
 )
