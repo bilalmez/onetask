@@ -580,6 +580,31 @@
       border: 1px solid var(--border);
     }
 
+    /* Priority Badges */
+    .priority-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .priority-week\ focus { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .priority-high        { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .priority-medium      { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+    .priority-low         { background: var(--gray-bg); color: var(--text2); border: 1px solid var(--border); }
+
+    /* History Panel */
+    .history-entry {
+      border-bottom: 1px solid var(--border);
+      padding: 10px 0;
+    }
+    .history-entry:last-child { border-bottom: none; }
+    .history-date { font-size: 12px; color: var(--text2); margin-bottom: 6px; }
+    .history-steps { list-style: none; padding: 0; margin: 0; }
+    .history-steps li { font-size: 13px; color: var(--text); padding: 2px 0; }
+    .history-steps li::before { content: '• '; color: var(--text2); }
+
     /* Progress Section */
     .prog-row {
       display: flex;
@@ -1135,6 +1160,10 @@
           <div class="prop-name">🔖 Status</div>
           <div class="prop-val"><span class="tag tag-blue" id="dash-status">● In Progress</span></div>
         </div>
+        <div class="prop-row" id="priority-row" style="display:none;">
+          <div class="prop-name">⚡ Priority</div>
+          <div class="prop-val"><span class="priority-badge" id="dash-priority">Medium</span></div>
+        </div>
       </div>
 
       <div class="divider"></div>
@@ -1172,7 +1201,14 @@
 
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
         <div class="h2" style="margin:0;">Weekly Plan</div>
-        <button class="btn-ghost-sm" onclick="toggleAdapt()">✏️ Adjust this plan</button>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button class="btn-ghost-sm" id="history-btn" onclick="toggleHistory()" style="display:none;">🕓 History</button>
+          <button class="btn-ghost-sm" onclick="toggleAdapt()">✏️ Adjust this plan</button>
+        </div>
+      </div>
+      <div id="history-panel" style="display:none; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:16px;">
+        <div class="h2" style="margin-bottom:12px;">Plan History</div>
+        <div id="history-list"></div>
       </div>
 
       <div class="adapt-panel" id="adapt-panel">
@@ -1456,6 +1492,8 @@
           ignored: data.ignored || [],
           currentStep: data.today_idx || 0,
           since: new Date().toISOString(),
+          priority: data.priority || null,
+          history: [],
         };
         save();
         renderDash();
@@ -1509,6 +1547,8 @@
           ignored: data.ignored || [],
           currentStep: data.today_idx || 0,
           since: new Date().toISOString(),
+          priority: data.priority || null,
+          history: [],
         };
         window._pendingFocusOverride = null;
         save();
@@ -1614,6 +1654,23 @@
       if (panel.classList.contains('open')) selectAdaptDays(0);
     }
 
+    function toggleHistory() {
+      const panel = document.getElementById('history-panel');
+      const isOpen = panel.style.display !== 'none';
+      if (isOpen) { panel.style.display = 'none'; return; }
+      const history = (state && state.history) ? state.history : [];
+      if (!history.length) { panel.style.display = 'none'; return; }
+      const list = document.getElementById('history-list');
+      list.innerHTML = history.slice().reverse().map((entry, i) => {
+        const d = new Date(entry.date);
+        const label = d.toLocaleDateString('en', { weekday: 'short', month: 'short', day: 'numeric' }) +
+          ' at ' + d.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' });
+        const steps = entry.steps.map(s => `<li><strong>${s.day}:</strong> ${s.text}</li>`).join('');
+        return `<div class="history-entry"><div class="history-date">Version ${history.length - i} — ${label}</div><ul class="history-steps">${steps}</ul></div>`;
+      }).join('');
+      panel.style.display = 'block';
+    }
+
     async function adaptSteps() {
       const desc = document.getElementById('adapt-input').value.trim();
       if (!desc) { showErr('adapt-error', 'Please describe your level or situation.'); return; }
@@ -1645,6 +1702,9 @@
         const data = await res.json();
         if (!data.success) throw new Error(data.error);
 
+        if (!state.history) state.history = [];
+        state.history.push({ date: new Date().toISOString(), steps: state.steps.map(s => ({ day: s.day, text: s.text })) });
+        if (state.history.length > 5) state.history.shift();
         state.steps = data.steps;
         state.tip = data.tip;
         state.currentStep = data.today_idx || 0;
@@ -1692,6 +1752,20 @@
 
       document.getElementById('dash-title').textContent = taskName;
       document.getElementById('dash-reason').textContent = reason || 'Your one focus this week';
+
+      const priorityRow = document.getElementById('priority-row');
+      const priorityBadge = document.getElementById('dash-priority');
+      if (state.priority) {
+        const p = state.priority;
+        priorityBadge.textContent = p;
+        priorityBadge.className = 'priority-badge priority-' + p.toLowerCase().replace(' ', '-');
+        priorityRow.style.display = '';
+      } else {
+        priorityRow.style.display = 'none';
+      }
+
+      const historyBtn = document.getElementById('history-btn');
+      historyBtn.style.display = (state.history && state.history.length > 0) ? '' : 'none';
 
       const ws = new Date(since);
       const we = new Date(since); we.setDate(we.getDate() + 6);
